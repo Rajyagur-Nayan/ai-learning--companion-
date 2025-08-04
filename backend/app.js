@@ -21,15 +21,13 @@ app.get("/", (req, res) => {
   res.send("API is running 🚀");
 });
 
-<<<<<<< HEAD
 app.use("/signup", require("./src/routes/user/signup.js"));
 app.use("/login", require("./src/routes/user/login.js"));
 app.use("/quiz", require("./src/routes/quiz/quiz.js"));
-=======
-app.use('/signup', require('./src/routes/user/signup.js'));
-app.use('/login', require('./src/routes/user/login.js'));
-app.use('/quiz', require('./src/routes/quiz/quiz.js'))
-app.use('/form', require('./src/routes/summrieze/form.js'))
->>>>>>> d8a5e483d23fab1656ac9c3120a04da48f3ccd25
+
+app.use("/signup", require("./src/routes/user/signup.js"));
+app.use("/login", require("./src/routes/user/login.js"));
+app.use("/quiz", require("./src/routes/quiz/quiz.js"));
+app.use("/form", require("./src/routes/summrieze/form.js"));
 
 module.exports = app;
