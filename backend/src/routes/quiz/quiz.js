@@ -2,23 +2,46 @@
 const express = require('express');
 const router = express.Router();
 const getGeminiResponse = require('../../controllers/gemini.js')
+const pool = require('../../connections/DB.connect.js')
 
-// Generate one question on a topic
-router.get('/generate', async (req, res) => {
-  const topic = req.query.topic || 'computer basics';
+// 1️⃣ Route: Generate quiz
+router.get('/', async (req, res) => {
+  try {
+    const questions = [];
+
+    for (let i = 0; i < 10; i++) {
+      const prompt = `Generate one multiple choice question on general knowledge in JSON format with 4 options and one correctAnswer.`;
+      const result = await getGeminiResponse(prompt);
+
+      const parsed = JSON.parse(result);
+      questions.push(parsed);
+    }
+
+    res.json({ questions });
+  } catch (err) {
+    console.error('Error generating quiz:', err);
+    res.status(500).json({ error: 'Failed to generate quiz' });
+  }
+});
+
+
+// 2️⃣ Route: Submit quiz result
+router.post('/:id/submit', async (req, res) => {
+  const quizId = req.params.id;
+  const { score } = req.body;
+
+  if (!score) return res.status(400).json({ error: 'Score is required' });
 
   try {
-    const prompt = `Generate one multiple choice question with 4 options and clearly indicate the correct option. Topic: ${topic}. Format like:
-{
-  "question": "What is...",
-  "options": ["A", "B", "C", "D"],
-  "correctAnswer": "B"
-}`
-const result = await getGeminiResponse(prompt)
-    console.log(result);
+    await pool.query(
+      'UPDATE quizzes SET score = $1, taken_at = CURRENT_TIMESTAMP WHERE id = $2',
+      [score, quizId]
+    );
+
+    res.json({ message: 'Quiz score updated successfully' });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Error generating question' });
+    console.error('Error updating score:', err);
+    res.status(500).json({ error: 'Failed to update quiz score' });
   }
 });
 
