@@ -6,10 +6,12 @@ import { Menu, X } from "lucide-react";
 import { useAuth } from "./auth/AuthContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LoginDialog } from "./auth/Login";
+import { RegisterDialog } from "./auth/Register";
 
 const Navbar = () => {
-  const [, setIsLoginDialogOpen] = useState(false);
-  const [, setIsRegisterDialogOpen] = useState(false);
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+  const [isRegisterDialogOpen, setIsRegisterDialogOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -78,6 +80,13 @@ const Navbar = () => {
           )}
         </div>
 
+        {/* Dialogs */}
+        {isLoginDialogOpen && (
+          <LoginDialog onClose={() => setIsLoginDialogOpen(false)} />
+        )}
+        {isRegisterDialogOpen && (
+          <RegisterDialog onClose={() => setIsRegisterDialogOpen(false)} />
+        )}
         {/* Mobile Toggle Button */}
         <div className="md:hidden">
           <Button

@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import toast from "react-hot-toast";
 
 import axios from "axios";
 
@@ -21,15 +22,15 @@ export function RegisterDialog({ onClose }: any) {
   const handleRegister = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      await axios.post("http://localhost:8080/signup", {
+      await axios.post("http://localhost:4000/signup", {
         name,
         email,
         password,
       });
-      //   toast.success("Register Success");
+      toast.success("Register Success");
     } catch (error) {
       console.log(error);
-      //   toast.error("Register Failed");
+      toast.error("Register Failed");
     }
   };
 
