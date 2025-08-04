@@ -1,35 +1,23 @@
-function parseGeminiResponse(reply) {
-    const response = {
-        summary: '',
-        packaging_match: null,
-        packaging_analysis: '',
-        possible_fake_reasons: [],
-        confidence_score: '',
-        conclusion: ''
-    };
+function parseProjectIdeasResponse(reply) {
+    const jsonStart = reply.indexOf('```json');
+    const jsonEnd = reply.lastIndexOf('```');
 
-    const lines = reply.split('\n').map(line => line.trim()).filter(Boolean);
-
-    for (const line of lines) {
-        if (line.startsWith('1. **Summary:**')) {
-            response.summary = line.replace('1. **Summary:**', '').trim();
-        } else if (line.startsWith('2. **Does image match official packaging?:**')) {
-            const content = line.replace('2. **Does image match official packaging?:**', '').trim();
-            response.packaging_match = content.toLowerCase().startsWith('yes');
-            response.packaging_analysis = content;
-        } else if (line.startsWith('3. **Signs of being fake:**')) {
-            const content = line.replace('3. **Signs of being fake:**', '').trim();
-            response.possible_fake_reasons = content.split(/[.·•\-]/).map(r => r.trim()).filter(Boolean);
-        } else if (line.startsWith('4. **Confidence of authenticity (0-100%):**')) {
-            response.confidence_score = line.replace('4. **Confidence of authenticity (0-100%):**', '').trim();
-        }
+    if (jsonStart === -1 || jsonEnd === -1) {
+        throw new Error("Invalid format: JSON block not found");
     }
 
-    response.conclusion = response.confidence_score === '0%'
-        ? 'The image lacks essential information to verify authenticity.'
-        : 'Based on available information, the product seems more likely to be genuine.';
+    const jsonString = reply.slice(jsonStart + 7, jsonEnd).trim();
 
-    return response;
+    try {
+        const ideas = JSON.parse(jsonString);
+        return ideas.map(({ title, detail }) => ({
+            title: title.trim(),
+            detail: detail.trim()
+        }));
+    } catch (error) {
+        console.error("JSON parsing error:", error);
+        return [];
+    }
 }
 
-module.exports = parseGeminiResponse;
+module.exports = parseProjectIdeasResponse;
