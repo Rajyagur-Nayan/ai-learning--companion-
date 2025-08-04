@@ -21,12 +21,5 @@ app.get('/', (req, res) => {
 
 app.use('/signup', require('./src/routes/user/signup.js'));
 app.use('/login', require('./src/routes/user/login.js'));
-app.use('/add', require('./src/routes/add/vote.js'));
-app.use('/vote', require('./src/routes/add/add_vote.js'))
-app.use('/votes/past', require('./src/routes/votes/past.js'))
-app.use('/votes/ongoing', require('./src/routes/votes/ongoing.js'))
-app.use('/votes/result', require('./src/routes/votes/result.js'))
-app.use('/admin', require('./src/routes/deshboard/admin.js'))
-app.use('/stats', require('./src/routes/deshboard/stats.js'))
 
 module.exports = app
