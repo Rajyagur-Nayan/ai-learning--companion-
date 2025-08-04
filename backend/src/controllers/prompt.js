@@ -1,20 +1,20 @@
-const generatePrompt = (name, url, code = null) => {
-    return `You are a pharmaceutical AI expert.
+const generatePrompt = (role, languages, description) => {
+  return `
+You are an expert tech roadmap advisor.
 
-Verify if the medicine below is genuine or fake:
+Based on the role: "${role}"
+And using these technologies: [${languages.join(', ')}]
+With the description: "${description}"
 
-- Name: ${name}
-- Image: ${url}
-${code ? `- Code: ${code}` : ''}
+Create a learning roadmap consisting of 5 to 7 concise and essential topics.
 
-Reply with:
-1. Summary (use, brand, ingredients)
-2. Does image match official packaging?
-3. Signs of being fake (if any)
-4. Confidence of authenticity (0–100%)
+Reply as an array of JSON objects, each with:
+- "title": a short roadmap step or skill
+- "detail": a brief 7–8 word explanation of what to learn
 
-Be concise and factual.`.trim();
-
+Only return the JSON array. No extra explanation or formatting.
+`.trim();
 };
+
 
 module.exports = generatePrompt;

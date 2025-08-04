@@ -16,7 +16,6 @@ router.get('/generate', async (req, res) => {
 }`
 const result = await getGeminiResponse(prompt)
     console.log(result);
-    res.send('your respons in console')
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error generating question' });
