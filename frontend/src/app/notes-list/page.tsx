@@ -6,51 +6,29 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, Upload, FileText, BookOpen, User, MoreHorizontal } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const notesData = [
-  {
-    title: "A summary of the impressionism art movement, highlighting its origins in 19th-century France, its break from traditional painting, and key artists like Monet and Renoir.",
-    date: "2024-04-12",
-    words: "1300 words",
-  },
-  {
-    title: "This note provides an overview of fundamental cybersecurity principles, covering concepts like confidentiality, integrity, and availability. It also touches on common threats and best practices for digital security.",
-    date: "2024-03-20",
-    words: "1800 words",
-  },
-  {
-    title: "A concise summary of the primary causes leading to the French Revolution, including social inequality, economic crisis, and Enlightenment ideas. It also outlines the major events and outcomes of the revolution.",
-    date: "2024-03-05",
-    words: "1450 words",
-  },
-  {
-    title: "This note details the measurable impacts of global climate change, including rising sea levels, extreme weather events, biodiversity loss, and ocean acidification. It also discusses potential mitigation strategies and adaptation measures.",
-    date: "2024-02-28",
-    words: "1900 words",
-  },
-  {
-    title: "A critical examination of the defining characteristics of Shakespearean tragedies. This note explores themes like fate versus free will, the role of tragic flaws, and the dramatic structure of plays such as Hamlet and Macbeth.",
-    date: "2024-01-10",
-    words: "1720 words",
-  },
-  {
-    title: "This summary introduces core machine learning algorithms such as linear regression, decision trees, support vector machines, and neural networks. It also covers basic concepts like supervised and unsupervised learning.",
-    date: "2023-12-03",
-    words: "1850 words",
-  },
-  {
-    title: "An overview of the profound economic transformations brought about by the Industrial Revolution. It discusses the shift from agrarian to industrial economies, technological innovations, and social impacts.",
-    date: "2023-11-15",
-    words: "1500 words",
-  },
-  {
-    title: "This note covers the fundamental concepts of quantum mechanics, including wave-particle duality, quantum entanglement, and the Schrödinger equation. It also touches on the implications for modern technology.",
-    date: "2023-10-26",
-    words: "1800 words",
-  },
-];
 
 export default function App() {
+
+  const [notes, setNotes] = useState<{ title: string; detail: string }[]>([])
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/form", {
+          withCredentials: true, // send cookies for auth
+        })
+        setNotes(res.data.data.rows) // Adjust based on your backend response
+      } catch (error) {
+        console.error("Error fetching notes:", error)
+      }
+    }
+
+    fetchNotes()
+  }, [])
+
   const sidebarNavItems = [
     { name: "Upload Material", icon: <Upload className="h-4 w-4" />, href: "/input-page", current: false },
     { name: "My Notes", icon: <FileText className="h-4 w-4" />, href: "/notes-list", current: true },
@@ -65,7 +43,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 flex flex-col">
-     
+
 
       {/* Main Content Area */}
       <div className="flex flex-1">
@@ -76,9 +54,8 @@ export default function App() {
               <a
                 key={item.name}
                 href={item.href}
-                className={`flex items-center space-x-3 p-3 rounded-lg ${
-                  item.current ? 'bg-blue-50 text-blue-500 font-semibold' : 'text-gray-600 hover:bg-gray-100'
-                }`}
+                className={`flex items-center space-x-3 p-3 rounded-lg ${item.current ? 'bg-blue-50 text-blue-500 font-semibold' : 'text-gray-600 hover:bg-gray-100'
+                  }`}
               >
                 {item.icon}
                 <span>{item.name}</span>
@@ -135,11 +112,11 @@ export default function App() {
               },
             }}
           >
-            {notesData.map((note, index) => (
+            {notes.map((note, index) => (
               <motion.div key={index} variants={cardVariants}>
                 <Card className="rounded-xl shadow-md h-full flex flex-col">
                   <CardContent className="p-6 flex-grow flex flex-col">
-                    <p className="text-sm text-gray-800 mb-4 flex-grow">{note.title}</p>
+                    <p className="text-sm text-gray-800 mb-4 flex-grow">{note.detail}</p>
                     <div className="flex items-center justify-between text-xs text-gray-500 mt-auto">
                       <span>{note.date}</span>
                       <span>{note.words}</span>
@@ -157,7 +134,7 @@ export default function App() {
         </main>
       </div>
 
-    
+
     </div>
   );
 }
