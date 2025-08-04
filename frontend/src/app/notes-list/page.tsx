@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -54,10 +53,10 @@ const notesData = [
 
 export default function App() {
   const sidebarNavItems = [
-    { name: "Upload Material", icon: <Upload className="h-4 w-4" />, href: "#", current: false },
-    { name: "My Notes", icon: <FileText className="h-4 w-4" />, href: "#", current: true },
-    { name: "My Quizzes", icon: <BookOpen className="h-4 w-4" />, href: "#", current: false },
-    { name: "My Profile", icon: <User className="h-4 w-4" />, href: "#", current: false },
+    { name: "Upload Material", icon: <Upload className="h-4 w-4" />, href: "/input-page", current: false },
+    { name: "My Notes", icon: <FileText className="h-4 w-4" />, href: "/notes-list", current: true },
+    { name: "My Quizzes", icon: <BookOpen className="h-4 w-4" />, href: "/quiz", current: false },
+    { name: "My Profile", icon: <User className="h-4 w-4" />, href: "/profile", current: false },
   ];
 
   const cardVariants = {
@@ -78,16 +77,16 @@ export default function App() {
             <a href="#" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Home
             </a>
-            <a href="#" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            <a href="/input-page" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Upload/Input
             </a>
-            <a href="#" className="text-sm font-medium text-blue-500 border-b-2 border-blue-500">
+            <a href="/notes-list" className="text-sm font-medium text-blue-500 border-b-2 border-blue-500">
               Notes
             </a>
-            <a href="#" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            <a href="/quiz" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Quiz
             </a>
-            <a href="#" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            <a href="/profile" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Profile
             </a>
             <div className="flex items-center space-x-2">

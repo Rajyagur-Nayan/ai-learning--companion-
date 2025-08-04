@@ -4,26 +4,23 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Search, Upload, FileText, BookOpen, User, Plus, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Search, Upload, FileText, BookOpen, User, BookOpenText, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { motion } from 'framer-motion';
 
 export default function App() {
   const sidebarNavItems = [
-    { name: "Upload Material", icon: <Upload className="h-4 w-4" />, href: "/input-page", current: false },
+    { name: "Upload Material", icon: <Upload className="h-4 w-4" />, href: "input-page", current: true },
     { name: "My Notes", icon: <FileText className="h-4 w-4" />, href: "/notes-list", current: false },
-    { name: "My Quizzes", icon: <BookOpen className="h-4 w-4" />, href: "/quiz", current: true },
-    { name: "My Profile", icon: <User className="h-4 w-4" />, href: "profile", current: false },
+    { name: "My Quizzes", icon: <BookOpen className="h-4 w-4" />, href: "/quiz", current: false },
+    { name: "My Profile", icon: <User className="h-4 w-4" />, href: "/profile", current: false },
   ];
 
-  const quizOptions = [
-    "Monitor",
-    "Keyboard",
-    "Printer",
-    "Speaker",
-  ];
-
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 flex flex-col">
@@ -38,13 +35,13 @@ export default function App() {
             <a href="#" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Home
             </a>
-            <a href="/input-page" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            <a href="input-page" className="text-sm font-medium text-blue-500 border-b-2 border-blue-500">
               Upload/Input
             </a>
-            <a href="/notes-list" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            <a href="notes-list" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Notes
             </a>
-            <a href="/quiz" className="text-sm font-medium text-blue-500 border-b-2 border-blue-500">
+            <a href="/quiz" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Quiz
             </a>
             <a href="/profile" className="text-sm font-medium text-gray-600 hover:text-gray-900">
@@ -86,42 +83,40 @@ export default function App() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-8 overflow-y-auto flex items-center justify-center">
+        <main className="flex-1 p-8 overflow-y-auto">
+          <h1 className="text-4xl font-bold mb-2">Upload or Paste Study Material</h1>
+          <p className="text-lg text-gray-600 mb-8">
+            <span className="inline-block w-2 h-2 rounded-full bg-gray-400 animate-pulse mr-1"></span>
+            <span className="inline-block w-2 h-2 rounded-full bg-gray-400 animate-pulse mr-1" style={{ animationDelay: '0.2s' }}></span>
+            <span className="inline-block w-2 h-2 rounded-full bg-gray-400 animate-pulse" style={{ animationDelay: '0.4s' }}></span>
+          </p>
+
+          
+          {/* Paste Text Content Section */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="w-full max-w-2xl"
+            initial="hidden"
+            animate="visible"
+            variants={cardVariants}
+            transition={{ delay: 0.1, duration: 0.5 }}
           >
-            <Card className="rounded-xl shadow-lg p-6">
-              <CardHeader className="p-0 mb-6">
-                <CardTitle className="text-lg font-semibold text-gray-600 mb-4">Question 1 of 5</CardTitle>
-                <h2 className="text-2xl font-bold">Which of the following is an input device?</h2>
-              </CardHeader>
-              <CardContent className="p-0 space-y-4">
-                {quizOptions.map((option, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    className={`w-full justify-start text-lg py-6 px-4 rounded-lg border ${
-                      selectedOption === option
-                        ? 'border-blue-500 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 hover:bg-gray-100'
-                    }`}
-                    onClick={() => setSelectedOption(option)}
-                  >
-                    {option}
-                  </Button>
-                ))}
-                <div className="flex justify-end pt-4">
-                  <Button className="bg-blue-500 text-white hover:bg-blue-600 px-6 py-3">
-                    Next Question
-                    <Plus className="ml-2 h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
+            <Card className="rounded-xl shadow-md p-6">
+              <CardTitle className="text-xl font-bold mb-4">Paste Text Content</CardTitle>
+              <Textarea
+                placeholder="Paste your study notes, article content, or any text you want to summarize and quiz here..."
+                className="min-h-[200px] bg-gray-50 resize-y"
+              />
+              <p className="text-xs text-gray-500 mt-2">
+                The AI works best with structured text between 100 to 5000 words for optimal summary and quiz generation.
+              </p>
             </Card>
           </motion.div>
+
+          {/* Generate Button */}
+          <div className="flex justify-center mt-8">
+            <Button className="bg-blue-600 text-white hover:bg-blue-700 px-8 py-3 text-lg">
+              Generate Summary & Quiz
+            </Button>
+          </div>
         </main>
       </div>
 
