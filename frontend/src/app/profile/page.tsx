@@ -20,10 +20,10 @@ const quizHistoryData = [
 
 export default function App() {
   const sidebarNavItems = [
-    { name: "Upload Material", icon: <Upload className="h-4 w-4" />, href: "#", current: false },
-    { name: "My Notes", icon: <FileText className="h-4 w-4" />, href: "#", current: false },
-    { name: "My Quizzes", icon: <BookOpen className="h-4 w-4" />, href: "#", current: false },
-    { name: "My Profile", icon: <User className="h-4 w-4" />, href: "#", current: true },
+    { name: "Upload Material", icon: <Upload className="h-4 w-4" />, href: "/input-page", current: false },
+    { name: "My Notes", icon: <FileText className="h-4 w-4" />, href: "/notes-list", current: false },
+    { name: "My Quizzes", icon: <BookOpen className="h-4 w-4" />, href: "/quiz", current: false },
+    { name: "My Profile", icon: <User className="h-4 w-4" />, href: "/profile", current: true },
   ];
 
   const cardVariants = {
@@ -44,16 +44,16 @@ export default function App() {
             <a href="#" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Home
             </a>
-            <a href="#" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            <a href="/input-page" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Upload/Input
             </a>
-            <a href="#" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            <a href="/notes-list" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Notes
             </a>
-            <a href="#" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            <a href="/quiz" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Quiz
             </a>
-            <a href="#" className="text-sm font-medium text-blue-500 border-b-2 border-blue-500">
+            <a href="/profile" className="text-sm font-medium text-blue-500 border-b-2 border-blue-500">
               Profile
             </a>
             <div className="flex items-center space-x-2">
