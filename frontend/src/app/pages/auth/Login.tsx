@@ -10,6 +10,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 // LoginDialog Component
 export function LoginDialog({ onClose }: any) {
@@ -20,7 +21,7 @@ export function LoginDialog({ onClose }: any) {
     event.preventDefault();
     try {
       await axios.post(
-        "http://localhost:8080/login",
+        "http://localhost:4000/login",
         {
           email,
           password,
@@ -30,10 +31,10 @@ export function LoginDialog({ onClose }: any) {
         }
       );
 
-      //   toast.success("Login Success");
+      toast.success("Login Success");
     } catch (error) {
       console.log(error);
-      //   toast.error("Login Failed");
+      toast.error("Login Failed");
     }
   };
 

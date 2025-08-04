@@ -6,33 +6,31 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE vote (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    count_yes INTEGER DEFAULT 0,
-    count_no INTEGER DEFAULT 0,
-    start_date TIMESTAMP NOT NULL,
-    end_date TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE user_votes (
+CREATE TABLE roadmap_topics (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
-    vote_id UUID NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    detail VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_user
         FOREIGN KEY (user_id)
         REFERENCES users(id)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_vote
-        FOREIGN KEY (vote_id)
-        REFERENCES vote(id)
-        ON DELETE CASCADE,
-
-    CONSTRAINT unique_user_vote
-        UNIQUE (user_id, vote_id)
+        ON DELETE CASCADE
 );
+
+CREATE TABLE quizzes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    topic VARCHAR(100), -- Optional: e.g., "AI", "DB"
+    score INTEGER NOT NULL CHECK (score >= 0 AND score <= 100),
+    total INTEGER NOT NULL DEFAULT 100,
+    taken_at DATE NOT NULL DEFAULT CURRENT_DATE,
+
+    CONSTRAINT fk_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+

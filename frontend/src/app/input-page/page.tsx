@@ -1,12 +1,46 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, FileText, BookOpen, User } from "lucide-react";
 import { motion } from "framer-motion";
+import { Label } from "@/components/ui/label";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 export default function App() {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    language: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await axios.post(
+        "http://localhost:4000/form",
+        {
+          title: formData.title,
+          description: formData.description,
+        },
+        {
+          withCredentials: true, // ✅ sends and receives cookies
+        }
+      );
+      toast.success("Login Success");
+      setFormData({ title: "", description: "", language: "" }); // Reset form
+    } catch (error) {
+      console.log(error);
+      toast.error("Login Failed");
+    }
+    console.log("Submitted:", formData);
+    // Handle upload logic here
+  };
+
   const sidebarNavItems = [
     {
       name: "Upload Material",
@@ -41,9 +75,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 flex flex-col">
-      {/* Main Content Area */}
+      {/* Main Area */}
       <div className="flex flex-1">
-        {/* Left Sidebar */}
+        {/* Sidebar */}
         <aside className="w-64 bg-white p-4 pt-6 shadow-md">
           <div className="space-y-2">
             {sidebarNavItems.map((item) => (
@@ -63,53 +97,64 @@ export default function App() {
           </div>
         </aside>
 
-        {/* Main Content */}
+        {/* Content */}
         <main className="flex-1 p-8 overflow-y-auto">
-          <h1 className="text-4xl font-bold mb-2">
-            Upload or Paste Study Material
+          <h1 className="text-4xl  font-bold mb-10">
+            Upload Your Study Material
           </h1>
-          <p className="text-lg text-gray-600 mb-8">
-            <span className="inline-block w-2 h-2 rounded-full bg-gray-400 animate-pulse mr-1"></span>
-            <span
-              className="inline-block w-2 h-2 rounded-full bg-gray-400 animate-pulse mr-1"
-              style={{ animationDelay: "0.2s" }}
-            ></span>
-            <span
-              className="inline-block w-2 h-2 rounded-full bg-gray-400 animate-pulse"
-              style={{ animationDelay: "0.4s" }}
-            ></span>
-          </p>
 
-          {/* Paste Text Content Section */}
+          {/* Upload Form */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={cardVariants}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
-            <Card className="rounded-xl shadow-md p-6">
-              <CardTitle className="text-xl font-bold mb-4">
-                Paste Text Content
+            <Card className="rounded-xl shadow-md p-6 space-y-4 max-w-3xl mx-auto">
+              <CardTitle className="text-xl font-bold">
+                Material Upload Form
               </CardTitle>
-              <Textarea
-                placeholder="Paste your study notes, article content, or any text you want to summarize and quiz here..."
-                className="min-h-[200px] bg-gray-50 resize-y"
-              />
-              <p className="text-xs text-gray-500 mt-2">
-                The AI works best with structured text between 100 to 5000 words
-                for optimal summary and quiz generation.
-              </p>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <Label>Title</Label>
+                <Input
+                  type="text"
+                  placeholder="Enter Title"
+                  value={formData.title}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
+                />
+                <Label>description</Label>
+                <Textarea
+                  placeholder="Enter Description"
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
+                  className="min-h-[120px]"
+                />
+                <Label>Language</Label>
+                <Input
+                  type="text"
+                  value={formData.language}
+                  onChange={(e) =>
+                    setFormData({ ...formData, language: e.target.value })
+                  }
+                />
+                <div className="pt-4">
+                  <Button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white hover:bg-blue-700 text-md"
+                  >
+                    Upload & Generate
+                  </Button>
+                </div>
+              </form>
             </Card>
           </motion.div>
-
-          {/* Generate Button */}
-          <div className="flex justify-center mt-8">
-            <Button className="bg-blue-600 text-white hover:bg-blue-700 px-8 py-3 text-lg">
-              Generate Summary & Quiz
-            </Button>
-          </div>
         </main>
       </div>
+         
     </div>
   );
 }
