@@ -7,15 +7,12 @@ const generatePrompt = require('../../controllers/prompt.js');
 const getGeminiResponse = require('../../controllers/gemini.js');
 const parseGeminiResponse = require('../../controllers/respons.js')
 require('dotenv').config();
-const multer = require('multer');
-const path = require('path');
-const { Result } = require('pg');
+const isLoggedIn = require('../../middelwear/login.js')
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/',isLoggedIn, async (req, res) => {
     try {
-        // const login_token = req.cookies.login_token;
 
         const { medicine_name, medicine_code, image_link } = req.body;
         const code = medicine_code || null;
@@ -24,9 +21,6 @@ router.post('/', async (req, res) => {
         if (!medicine_name || !image_link) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
-        // if (!login_token) {
-        //     return res.status(400).json({ error: 'you are not login' });
-        // }
 
         const data = verifyToken(login_token);
         console.log(data);

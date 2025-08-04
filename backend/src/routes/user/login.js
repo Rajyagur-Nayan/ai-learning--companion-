@@ -36,7 +36,7 @@ router.post("/", async (req, res) => {
         res
             .status(200)
             .cookie("login_token", token, {
-                httpOnly: true,
+                httpOnly: false,
                 sameSite: "None",
                 secure: true,
                 maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
