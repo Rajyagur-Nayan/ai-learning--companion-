@@ -12,8 +12,9 @@ import {
   Award,
   Book,
 } from "lucide-react"; // Using lucide-react for icons
+import { useEffect } from "react";
+import axios from "axios";
 
-// Define a simple data structure for notes and quiz scores
 const latestNotes = [
   {
     topic: "Physics Basics",
@@ -49,6 +50,19 @@ export default function Home() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/");
+        console.log(response.data);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 font-inter">
