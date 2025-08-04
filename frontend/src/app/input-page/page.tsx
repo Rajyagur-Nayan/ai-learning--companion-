@@ -15,30 +15,39 @@ export default function App() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    language: "",
   });
+  const [language, setLanguage] = useState<any[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Convert comma-separated language input to array
+    const languagesArray = language[0]
+      .split(",")
+      .map((lang: string) => lang.trim())
+      .filter((lang: string) => lang); // remove empty strings
+
     try {
       await axios.post(
         "http://localhost:4000/form",
         {
-          title: formData.title,
+          role: formData.title,
           description: formData.description,
+          languages: languagesArray,
         },
         {
-          withCredentials: true, // ✅ sends and receives cookies
+          withCredentials: true,
         }
       );
-      toast.success("Login Success");
-      setFormData({ title: "", description: "", language: "" }); // Reset form
+      console.log("Upload Success");
+      toast.success("Upload Success");
+      // Optional reset:
+      setFormData({ title: "", description: "" });
+      setLanguage([]);
     } catch (error) {
-      console.log(error);
-      toast.error("Login Failed");
+      console.error(error);
+      toast.error("Upload Failed");
     }
-    console.log("Submitted:", formData);
-    // Handle upload logic here
   };
 
   const sidebarNavItems = [
@@ -123,6 +132,7 @@ export default function App() {
                   onChange={(e) =>
                     setFormData({ ...formData, title: e.target.value })
                   }
+                  required
                 />
                 <Label>description</Label>
                 <Textarea
@@ -131,15 +141,15 @@ export default function App() {
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
+                  required
                   className="min-h-[120px]"
                 />
                 <Label>Language</Label>
                 <Input
                   type="text"
-                  value={formData.language}
-                  onChange={(e) =>
-                    setFormData({ ...formData, language: e.target.value })
-                  }
+                  value={language}
+                  onChange={(e) => setLanguage([e.target.value])}
+                  required
                 />
                 <div className="pt-4">
                   <Button
@@ -154,7 +164,6 @@ export default function App() {
           </motion.div>
         </main>
       </div>
-         
     </div>
   );
 }
