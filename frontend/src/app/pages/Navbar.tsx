@@ -4,15 +4,23 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useAuth } from "./auth/AuthContext";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
-  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
-  const [isRegisterDialogOpen, setIsRegisterDialogOpen] = useState(false);
+  const [, setIsLoginDialogOpen] = useState(false);
+  const [, setIsRegisterDialogOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navItems = ["Home", "Upload/Input", "Notes", "Quiz", "Profile"];
-
+  const navItems = [
+    { name: "Home", path: "/" },
+    { name: "Input-Form", path: "/input-page" },
+    { name: "Notes", path: "/notes-list" },
+    { name: "Quiz", path: "/quiz" },
+    { name: "Profile", path: "/profile" },
+  ];
+  const pathname = usePathname();
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -24,20 +32,26 @@ const Navbar = () => {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-6 text-sm">
-          {navItems.map((item, index) => (
-            <motion.a
-              key={item}
-              href="#"
-              className={`hover:text-indigo-600 transition-colors duration-200 ${
-                item === "Home" ? "text-indigo-600 font-semibold" : ""
-              }`}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              {item}
-            </motion.a>
-          ))}
+          {navItems.map((item, index) => {
+            const isActive = pathname === item.path;
+            return (
+              <motion.div
+                key={item.name}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Link
+                  href={item.path}
+                  className={`transition-colors duration-200 hover:text-indigo-600 ${
+                    isActive ? "text-indigo-600 font-semibold" : "text-gray-700"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              </motion.div>
+            );
+          })}
         </nav>
 
         {/* Auth Buttons - Desktop */}
@@ -79,19 +93,29 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white px-4 py-4 space-y-4 border-t border-gray-200">
-          <nav className="flex flex-col space-y-2">
-            {navItems.map((item) => (
-              <a
-                key={item}
-                href="#"
-                className={`text-sm font-medium ${
-                  item === "Home" ? "text-indigo-600" : "text-gray-700"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item}
-              </a>
-            ))}
+          <nav className="hidden md:flex space-x-6 text-sm">
+            {navItems.map((item, index) => {
+              const isActive = pathname === item.path;
+              return (
+                <motion.div
+                  key={item.name}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Link
+                    href={item.path}
+                    className={`transition-colors duration-200 hover:text-indigo-600 ${
+                      isActive
+                        ? "text-indigo-600 font-semibold"
+                        : "text-gray-700"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                </motion.div>
+              );
+            })}
           </nav>
           <div className="flex flex-col space-y-2 pt-4 border-t">
             {isAuthenticated ? (
