@@ -16,14 +16,15 @@ router.get('/', isLoggedIn, async (req, res) => {
     const userResult = await pool.query('SELECT name FROM users WHERE id = $1', [user_id]);
     if (userResult.rowCount === 0) return res.status(404).json({ error: 'User not found' });
 
-    const title = userResult.rows[0].name;
-
+    
     // Step 2: Get random topic from roadmap
     const topicResult = await pool.query(
-      'SELECT title FROM roadmap_topics WHERE user_id = $1 ORDER BY RANDOM() LIMIT 1',
+      'SELECT title, detail FROM roadmap_topics WHERE user_id = $1 ORDER BY RANDOM() LIMIT 1',
       [user_id]
     );
-    const topic = topicResult.rows[0]?.title || 'General';
+
+    const title = topicResult.rows[0].title;
+    const topic = topicResult.rows[0]?.detail || 'General';
 
     // Step 3: Insert into quizzes
     const quizInsert = await pool.query(
@@ -38,6 +39,37 @@ router.get('/', isLoggedIn, async (req, res) => {
   } catch (err) {
     console.error('Error creating quiz:', err);
     res.status(500).json({ error: 'Failed to create quiz' });
+  }
+});
+
+router.post('/', async (req, res) => {
+  const { id, score, total } = req.body;
+
+  const numericScore = Number(score);
+  const numericTotal = Number(total);
+
+  if (!id || isNaN(numericScore) || isNaN(numericTotal)) {
+    return res.status(400).json({ error: 'Invalid input. id, score, and total must be valid numbers.' });
+  }
+
+
+  try {
+    const result = await pool.query(
+      `UPDATE quizzes
+       SET score = $1, total = $2
+       WHERE id = $3
+       RETURNING *;`,
+      [score, total, id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Quiz not found.' });
+    }
+
+    res.json({ message: 'Quiz updated successfully.', quiz: result.rows[0] });
+  } catch (err) {
+    console.error('Error updating quiz score:', err);
+    res.status(500).json({ error: 'Internal server error.' });
   }
 });
 

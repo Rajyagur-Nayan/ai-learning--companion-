@@ -12,7 +12,6 @@ Generate 10 multiple choice questions in strict JSON format as an array. Each ob
 
 Only return raw JSON array. No explanations, no formatting like \`\`\`.
 Topic: ${topic}
-Title: ${title}
   `;
 
   const result = await getGeminiResponse(prompt);
