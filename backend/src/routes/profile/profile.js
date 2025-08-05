@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const isLoggedIn = require('../../middelwear/login.js')
+const pool = require('../../connections/DB.connect.js')
 
 // GET /profile/monthly-scores/:userId
 router.get('/monthly-scores', isLoggedIn, async (req, res) => {
